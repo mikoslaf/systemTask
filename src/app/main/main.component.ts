@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { WorkingService } from '../working.service';
 
 @Component({
   selector: 'app-main',
@@ -8,5 +9,11 @@ import { Component } from '@angular/core';
   styleUrl: './main.component.scss'
 })
 export class MainComponent {
+  
+  constructor(public working: WorkingService) {
+    working.sub().subscribe( tasks => {
+      console.log(tasks);
+    })
+  }
 
 }
