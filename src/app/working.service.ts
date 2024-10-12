@@ -32,5 +32,10 @@ export class WorkingService {
     this.rxdata.next(this.tasks);
   }
 
+  public add(task: Task) {
+    this.tasks.push(task);
+    this.refresh();
+  }
+
   constructor() { }
 }
