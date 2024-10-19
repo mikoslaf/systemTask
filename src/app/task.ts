@@ -1,4 +1,3 @@
-import { Status } from "./status";
 import { Work } from "./work";
 
 export interface Task {
@@ -6,6 +5,6 @@ export interface Task {
     taskStart: Date,
     taskEnd: Date,
     active: boolean,
-    status: Status,
+    status: number,
     work: Work[],
 }

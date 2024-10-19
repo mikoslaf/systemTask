@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { WorkingService } from '../working.service';
+import { Task } from '../task'
 
 @Component({
   selector: 'app-main',
@@ -9,7 +10,11 @@ import { WorkingService } from '../working.service';
   styleUrl: './main.component.scss'
 })
 export class MainComponent {
-  
+
+  clicks(){
+    this.working.add({name:'',taskStart:new Date(), taskEnd:new Date(),active:true, status: 0, work:[]});
+  }
+
   constructor(public working: WorkingService) {
     working.sub().subscribe( tasks => {
       console.log(tasks);
