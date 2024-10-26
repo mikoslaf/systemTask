@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Task } from '../task';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-taskitem',
@@ -10,4 +11,13 @@ import { Task } from '../task';
 })
 export class TaskitemComponent {
   @Input() dane:Task = {id: -1, active: false, name: "", status: 0, taskEnd: new Date(), taskStart: new Date(), work:[]};
+  constructor(private router: Router){}
+
+  public edit(id: number) {
+    this.router.navigate(['/add', id]);
+  }
+
+  public remove(id: number) {
+    // add in the futhere
+  }
 }
