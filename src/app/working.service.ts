@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class WorkingService {
-
+  static lastID: number = 0; 
   
   public static taskStatus: Status[] = [
     { id: 0, name: "Do wykonania" },
@@ -32,7 +32,16 @@ export class WorkingService {
     this.rxdata.next(this.tasks);
   }
 
-  public add(task: Task) {
+  public addOrUpdate(task: Task) {
+    if(task.id < 0 ) {
+      this.tasks.push(task);
+      task.id = ++ WorkingService.lastID;
+    } else {
+      let ind = this.tasks.findIndex(e=>e.id = task.id);
+      if (ind >= 0) {
+        this.tasks[ind] = task;
+      }
+    }
     this.tasks.push(task);
     this.save();
     this.refresh();
@@ -51,7 +60,11 @@ export class WorkingService {
       e.taskStart = new Date(e.taskStart);
       e.taskEnd = new Date(e.taskEnd);
     })
+
+    WorkingService.lastID = Math.max( ...this.tasks.map(e =>e.id) )
+
     console.log(this.tasks);
+    this.refresh();
   }
 
   constructor() { 

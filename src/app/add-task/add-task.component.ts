@@ -12,7 +12,7 @@ import { Task } from '../task';
   styleUrl: './add-task.component.scss'
 })
 export class AddTaskComponent {
-  public dane: Task =  {name: "", active: true, status: 0, taskEnd: new Date(), taskStart: new Date(), work: []};
+  public dane: Task =  {id: -1, name: "", active: true, status: 0, taskEnd: new Date(), taskStart: new Date(), work: []};
   public status = WorkingService.taskStatus;
 
   constructor(public serv: WorkingService) {}
@@ -35,6 +35,6 @@ export class AddTaskComponent {
   }
 
   save(){
-    this.serv.add(this.dane);
+    this.serv.addOrUpdate(this.dane);
   }
 }
