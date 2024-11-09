@@ -3,6 +3,7 @@ import { WorkingService } from '../working.service';
 import { FormsModule } from "@angular/forms";
 import { NgFor } from '@angular/common';
 import { Task } from '../task';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-task',
@@ -15,7 +16,12 @@ export class AddTaskComponent {
   public dane: Task =  {id: -1, name: "", active: true, status: 0, taskEnd: new Date(), taskStart: new Date(), work: []};
   public status = WorkingService.taskStatus;
 
-  constructor(public serv: WorkingService) {}
+  constructor(public serv: WorkingService, private activeRouter: ActivatedRoute, private router: Router) {}
+
+  ngOnInit(): void {
+    let id = this.activeRouter.snapshot.paramMap.get("id");
+    this.dane = this.serv.getTask(id != null ? parseInt(id) : -1);
+  }
 
   getTime(date: Date): string {
     const year = date.getFullYear();
@@ -36,5 +42,6 @@ export class AddTaskComponent {
 
   save(){
     this.serv.addOrUpdate(this.dane);
+    this.router.navigate(['/tasks']);
   }
 }

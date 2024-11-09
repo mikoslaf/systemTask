@@ -1,3 +1,23 @@
+
+<!-- Modal -->
+<div class="modal fade" id="removeModal" tabindex="-1" aria-labelledby="removeModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="removeModalLabel">Usuwanie danych</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Czy jesteś pewien, że chcesz usunąć? <br/><br/> {{getinfo()}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+        <button type="button" class="btn btn-danger" (click)="remove()" data-bs-dismiss="modal" >Usuń</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="card mt-3">
     <div class="card-body">
       <div class="row">
@@ -7,7 +27,7 @@
         <div class="col-2">
             <span class="btn btn-primary ms-1"><i class="bi bi-play-circle"></i></span> 
             <span class="btn btn-success ms-1" (click)="edit(dane.id)"><i class="bi bi-pen"></i></span> 
-            <span class="btn btn-danger ms-1" (click)="remove(dane.id)" ><i class="bi bi-trash"></i></span> 
+            <span class="btn btn-danger ms-1" (click)="removeSelect(dane.id)" data-bs-toggle="modal" data-bs-target="#removeModal" ><i class="bi bi-trash"></i></span> 
         </div>
       </div>
     </div>
