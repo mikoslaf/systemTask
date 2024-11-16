@@ -4,6 +4,9 @@ import { FormsModule } from "@angular/forms";
 import { NgFor } from '@angular/common';
 import { Task } from '../task';
 import { ActivatedRoute, Router } from '@angular/router';
+import moment from 'moment';
+import "moment-business-days"
+
 
 @Component({
   selector: 'app-add-task',
@@ -13,7 +16,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrl: './add-task.component.scss'
 })
 export class AddTaskComponent {
-  public dane: Task =  {id: -1, name: "", active: true, status: 0, taskEnd: new Date(), taskStart: new Date(), work: []};
+  public dane: Task =  WorkingService.getEmptyTask();
   public status = WorkingService.taskStatus;
 
   constructor(public serv: WorkingService, private activeRouter: ActivatedRoute, private router: Router) {}
@@ -32,12 +35,23 @@ export class AddTaskComponent {
     return `${year}-${month}-${day}`;
   }
 
+  public getHours() {
+    let start = moment(this.dane.taskStart);
+    let end = moment(this.dane.taskEnd);
+    end.add(1, 'day');
+    return end.businessDiff(start) * 8;
+  }
+
   setTaskStart(th: any): void {
-    this.dane.taskStart = new Date(th.target.value);
+    let taskS = new Date(th.target.value);
+    if(taskS <= this.dane.taskEnd)
+      this.dane.taskStart = new Date(th.target.value);
   }
 
   setTaskEnd(th: any): void {
-    this.dane.taskEnd = new Date(th.target.value);
+    let taskE = new Date(th.target.value)
+    if(taskE >= this.dane.taskStart)
+      this.dane.taskEnd = taskE;
   }
 
   save(){

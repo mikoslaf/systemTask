@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { WorkingService } from '../working.service';
-import { Task } from '../task'
 
 @Component({
   selector: 'app-main',
