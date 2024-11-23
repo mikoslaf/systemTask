@@ -3,7 +3,6 @@ import { Task } from '../task';
 import { Router } from '@angular/router';
 import { WorkingService } from '../working.service';
 import { NgClass } from '@angular/common';
-import { Work } from '../work';
 
 @Component({
   selector: 'app-taskitem',
@@ -33,17 +32,7 @@ export class TaskitemComponent {
   }
 
   public statusChange() {
-    let work: Work | undefined = this.dane.work.at(-1);
-
-    if(work != undefined && work.status.id == WorkingService.workStatusStart) {
-      work.status = WorkingService.workSelectStatus(WorkingService.workStatusStop);
-      work.stop = new Date();
-    } else {
-      work = WorkingService.getEmptyWork();
-      this.dane.work.push(work);
-    }
-    
-    this.serv.addOrUpdate(this.dane);
+    this.serv.statusChange(this.dane);
   }
 
   public removeSelect(id: number){

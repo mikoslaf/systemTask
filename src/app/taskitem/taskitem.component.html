@@ -31,6 +31,7 @@
             'btn-danger': status(),
             'ms-1': true
           }"
+          (click)="statusChange()"
         >
           <i
             [ngClass]="{
@@ -38,7 +39,6 @@
               'bi-play-circle': !status(),
               'bi-pause-circle': status()
             }"
-            (click)="statusChange()"
           ></i>
         </span>
         <span class="btn btn-success ms-1" (click)="edit(dane.id)"
