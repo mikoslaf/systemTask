@@ -2,26 +2,40 @@ import { Injectable } from '@angular/core';
 import { Status } from './status';
 import { Task } from './task';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { Work } from './work';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WorkingService {
   static lastID: number = 0;
-  static getEmptyTask(): Task {
-    return {id: -1, active: false, name: "", status: 0, taskEnd: new Date(), taskStart: new Date(), work:[]}
-  }
+
+  public static workStatusNew: number = 0;
+  public static workStatusStart: number = 250;
+  public static workStatusStop: number = 500;
 
   public static taskStatus: Status[] = [
-    { id: 0, name: 'Do wykonania' },
-    { id: 250, name: 'W trakcie' },
-    { id: 500, name: 'Wykonane' },
+    { id: WorkingService.workStatusNew, name: 'Do wykonania' },
+    { id: WorkingService.workStatusStart, name: 'W trakcie' },
+    { id: WorkingService.workStatusStop, name: 'Wykonane' },
   ];
 
   public static workStatus: Status[] = [
-    { id: 250, name: 'Do trakcie' },
-    { id: 500, name: 'Wykonane' },
+    { id: WorkingService.workStatusStart, name: 'Do trakcie' },
+    { id: WorkingService.workStatusStop, name: 'Wykonane' },
   ];
+
+  static getEmptyTask(): Task {
+    return {id: -1, active: false, name: "", status: 0, taskEnd: new Date(), taskStart: new Date(), work:[]};
+  }
+
+  static workSelectStatus(id: number): Status {
+    return WorkingService.workStatus.filter(e => e.id == id)[0];
+  }
+
+  static getEmptyWork(): Work {
+    return {start: new Date(), stop: new Date(), status: WorkingService.workSelectStatus(this.workStatusStart)};
+  }
 
   private tasks: Task[] = [];
 
