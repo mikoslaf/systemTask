@@ -7,5 +7,7 @@ export interface Task {
     taskEnd: Date,
     active: boolean,
     status: number,
+    timeWorking: number,
+    lastStatus?: Date | null,
     work: Work[],
 }

@@ -3,6 +3,7 @@ import { Status } from './status';
 import { Task } from './task';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Work } from './work';
+import moment from 'moment';
 
 @Injectable({
   providedIn: 'root',
@@ -26,7 +27,7 @@ export class WorkingService {
   ];
 
   static getEmptyTask(): Task {
-    return {id: -1, active: false, name: "", status: 0, taskEnd: new Date(), taskStart: new Date(), work:[]};
+    return {id: -1, active: false, name: "", status: 0, taskEnd: new Date(), taskStart: new Date(), work:[], timeWorking: 0};
   }
 
   static workSelectStatus(id: number): Status {
@@ -62,15 +63,33 @@ export class WorkingService {
     console.log(indexTask);
 
     if (indexTask >= 0) return this.tasks[indexTask];
-    return {
-      id: -1,
-      name: '',
-      active: true,
-      status: 0,
-      taskEnd: new Date(),
-      taskStart: new Date(),
-      work: [],
-    };
+    let newTask = WorkingService.getEmptyTask();
+    newTask.active = true;
+    return newTask;
+  }
+
+  public static getWorkTime(task: Task): string {
+    let workTime = 0;
+    if(task.status == WorkingService.workStatusStart){
+      let work: Work | undefined = task.work.at(-1);
+      workTime = (new Date()).getTime() - (new Date(work?.start??(new Date).getTime())).getTime();
+    }
+    let sumTime = task.timeWorking;
+    if(!sumTime){
+      sumTime = 0;
+    }
+    sumTime += workTime;
+
+    let duration = moment.duration(sumTime);
+    const day = duration.days();
+    const hour = duration.hours().toString().padStart(2, "0");
+    const minute = duration.minutes().toString().padStart(2, "0");
+    const second = duration.seconds().toString().padStart(2, "0");
+    if(day > 0){
+      return `${day}:${hour}:${minute}:${second}`;
+    }
+    return `${hour}:${minute}:${second}`;
+    
   }
 
   public addOrUpdate(task: Task): void {
@@ -111,14 +130,32 @@ export class WorkingService {
     this.refresh();
   }
 
+  public updateWorkTime(task: Task) {
+    let workList: Work[] = task.work.filter(e => e.status.id == WorkingService.workStatusStop);
+    let sum = 0;
+    workList.forEach(e => {
+      sum += (new Date(e.stop).getTime() - new Date(e.start).getTime());
+    });
+    task.timeWorking = sum;
+    console.log(workList);
+    
+    console.log(sum);
+  }
+
+  public lastTaskItem(): Task | undefined {
+    let task = this.tasks.sort((a, b) => ((a.lastStatus??0) < (b.lastStatus??0)) ? 1 : -1);
+    return task.at(-1); // sprawdzić czy jest źle
+  }
+
   public statusChange(task: Task) {
+
     let work: Work | undefined = task.work.at(-1);
-    console.log(task);
 
     if(work != undefined && work.status.id == WorkingService.workStatusStart) {
       work.status = WorkingService.workSelectStatus(WorkingService.workStatusStop);
       work.stop = new Date();
       task.status = WorkingService.workStatusStop
+      this.updateWorkTime(task);
     } else {
       let activeTask = this.taskStatusStart();
       if(activeTask) {
@@ -127,6 +164,7 @@ export class WorkingService {
       work = WorkingService.getEmptyWork();
       task.work.push(work);
       task.status = WorkingService.workStatusStart;
+      task.lastStatus = new Date();
     }
     
     this.addOrUpdate(task);

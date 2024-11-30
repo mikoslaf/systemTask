@@ -20,10 +20,15 @@
 <div class="card mt-3">
   <div class="card-body">
     <div class="row">
-      <div class="col-10">
-        {{ dane.name }}
+      <div class="col-8">
+        <h4>{{ dane.name }}</h4>  
       </div>
-      <div class="col-2">
+      <div class="col-1">
+        <div class="text-wrap text-bg-primary badge">
+          {{ workTime }}
+        </div>
+      </div>
+      <div class="col-3">
         <span
           [ngClass]="{
             btn: true,
