@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Status } from './status';
 import { Task } from './task';
+import { Category } from './category';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Work } from './work';
 import moment from 'moment';
@@ -14,7 +15,7 @@ export class WorkingService {
   public static workStatusNew: number = 0;
   public static workStatusStart: number = 250;
   public static workStatusStop: number = 500;
-
+  
   public static taskStatus: Status[] = [
     { id: WorkingService.workStatusNew, name: 'Do wykonania' },
     { id: WorkingService.workStatusStart, name: 'W trakcie' },
@@ -26,8 +27,16 @@ export class WorkingService {
     { id: WorkingService.workStatusStop, name: 'Wykonane' },
   ];
 
+  static getEmptyCategory(): Category {
+    return {id: -1, name: ""};
+  }
+
+  static getBasicCategory(): Category {
+    return {id: 0, name: "Brak"};
+  }
+
   static getEmptyTask(): Task {
-    return {id: -1, active: false, name: "", status: 0, taskEnd: new Date(), taskStart: new Date(), work:[], timeWorking: 0};
+    return {id: -1, active: false, name: "", status: 0, taskEnd: new Date(), taskStart: new Date(), work:[], timeWorking: 0, category: -1};
   }
 
   static workSelectStatus(id: number): Status {
@@ -40,9 +49,14 @@ export class WorkingService {
 
 
   private tasks: Task[] = [];
+  private categories: Category[] = [{id: 0, name: "Brak"}];
 
-  private rxdata: BehaviorSubject<Task[]> = new BehaviorSubject<Task[]>(
+  private rxdataTask: BehaviorSubject<Task[]> = new BehaviorSubject<Task[]>(
     this.tasks
+  );
+
+  private rxdataCategory: BehaviorSubject<Category[]> = new BehaviorSubject<Category[]>(
+    this.categories
   );
 
   public taskStatusStart(): Task | null {
@@ -50,22 +64,36 @@ export class WorkingService {
     return workTask;
   }
 
-  public sub(): Observable<Task[]> {
-    return this.rxdata.asObservable();
+  public subTask(): Observable<Task[]> {
+    return this.rxdataTask.asObservable();
+  }
+
+  public subCategory(): Observable<Category[]> {
+    return this.rxdataCategory.asObservable();
   }
 
   public refresh(): void {
-    this.rxdata.next(this.tasks);
+    this.rxdataTask.next(this.tasks);
+    this.rxdataCategory.next(this.categories);
+  }
+
+  getCategories(): Category[] {
+    return this.categories;
   }
 
   getTask(id: number): Task {
     let indexTask = this.tasks.findIndex((e) => e.id == id);
-    console.log(indexTask);
 
     if (indexTask >= 0) return this.tasks[indexTask];
     let newTask = WorkingService.getEmptyTask();
     newTask.active = true;
     return newTask;
+  }
+
+  getCategory(id: number): Category {
+    let index = this.categories.findIndex((e) => e.id == id);
+    if (index >= 0) return this.categories[index];
+    return WorkingService.getEmptyCategory();
   }
 
   public static getWorkTime(task: Task): string {
@@ -106,14 +134,32 @@ export class WorkingService {
     this.refresh();
   }
 
+  public addOrUpdateCategory(category: Category): void {
+    if (category.id < 0) {
+      category.id = this.categories.length;
+      this.categories.push(category);
+    } else {
+      let index = this.categories.findIndex((e) => (e.id == category.id));
+      if (index >= 0) {
+        this.categories[index] = category;
+      }
+    }
+
+    this.save();
+    this.refresh();
+  }
+
   save(): void {
-    localStorage.setItem('sem3_apl_int', JSON.stringify(this.tasks));
+    let data = [this.tasks, this.categories];
+    localStorage.setItem('sem3_apl_int', JSON.stringify(data));
   }
 
   load(): void {
     let dane = localStorage.getItem('sem3_apl_int');
-    if (!dane) dane = '[]';
-    this.tasks = JSON.parse(dane) as Task[];
+    if (!dane) {dane = '[[],[]]'}
+    else this.categories = JSON.parse(dane)[1] as Category[];
+    
+    this.tasks = JSON.parse(dane)[0] as Task[];
     this.tasks.forEach((e) => {
       e.taskStart = new Date(e.taskStart);
       e.taskEnd = new Date(e.taskEnd);

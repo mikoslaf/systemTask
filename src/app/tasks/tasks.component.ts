@@ -3,7 +3,8 @@ import { WorkingService } from '../working.service';
 import { Router } from '@angular/router';
 import { Task } from '../task';
 import { NgFor } from '@angular/common';
-import { TaskitemComponent } from "../taskitem/taskitem.component";
+import { Category } from '../category';
+import { TaskitemComponent } from '../taskitem/taskitem.component';
 
 @Component({
   selector: 'app-tasks',
@@ -14,6 +15,7 @@ import { TaskitemComponent } from "../taskitem/taskitem.component";
 })
 export class TasksComponent {
   public tasks: Task[]= []; 
+  public categories: Category[] = [];
   public removeItem:Task = WorkingService.getEmptyTask();
   
 
@@ -27,8 +29,12 @@ export class TasksComponent {
   }
 
   constructor(private serwis: WorkingService, private router: Router) {
-    serwis.sub().subscribe((tasks: Task[]) => {
+    serwis.subTask().subscribe((tasks: Task[]) => {
       this.tasks = tasks;
+    })
+
+    serwis.subCategory().subscribe((categories: Category[]) => {
+      this.categories = categories;
     })
   }
 }

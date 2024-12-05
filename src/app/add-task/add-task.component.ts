@@ -18,12 +18,15 @@ import "moment-business-days"
 export class AddTaskComponent {
   public dane: Task =  WorkingService.getEmptyTask();
   public status = WorkingService.taskStatus;
-
+  public categories = [WorkingService.getBasicCategory()];
+  
   constructor(public serv: WorkingService, private activeRouter: ActivatedRoute, private router: Router) {}
-
+  
   ngOnInit(): void {
     let id = this.activeRouter.snapshot.paramMap.get("id");
     this.dane = this.serv.getTask(id != null ? parseInt(id) : -1);
+    this.dane.category = 0;
+    this.categories = this.serv.getCategories();
   }
 
   getTime(date: Date): string {

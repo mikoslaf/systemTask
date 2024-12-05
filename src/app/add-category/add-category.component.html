@@ -1,0 +1,13 @@
+<div class="card mt-3">
+    <div class="card-body">
+      <h5 class="card-title">Dodaj kategorię</h5>
+      <div class="mt-3">
+        <label for="name" class="form-label">Nazwa Kategoria </label>
+        <input type="text" class="form-control" id="name" [(ngModel)]="dane.name" placeholder="Kategoria">
+      </div>
+
+      <div class="mt-3 d-flex justify-content-end">
+        <button type="button" class="btn btn-primary" (click)="save()">Zapisz</button>
+      </div>
+    </div>
+  </div>

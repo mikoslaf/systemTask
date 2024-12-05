@@ -3,8 +3,6 @@ import { Task } from '../task';
 import { Router } from '@angular/router';
 import { WorkingService } from '../working.service';
 import { NgClass } from '@angular/common';
-import moment from 'moment';
-import { Work } from '../work';
 
 @Component({
   selector: 'app-taskitem',
@@ -18,11 +16,17 @@ export class TaskitemComponent {
   @Output() delete = new EventEmitter<number>();
 
   public workTime: string = "00:00:00";
+  public categories = [WorkingService.getBasicCategory()];
 
   constructor(private router: Router, private serv: WorkingService){
+    this.categories = this.serv.getCategories();
     setInterval(() => {
       this.workTime = WorkingService.getWorkTime(this.dane);
     }, 500);
+  }
+
+  public getCategoryName(id: number): string {
+    return this.categories.filter(e => e.id == id)[0].name
   }
 
   public edit(id: number) {

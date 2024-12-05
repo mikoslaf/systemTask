@@ -11,7 +11,7 @@ import { WorkingService } from '../working.service';
 export class MainComponent {
 
   constructor(public working: WorkingService) {
-    working.sub().subscribe( tasks => {
+    working.subTask().subscribe( tasks => {
       console.log(tasks);
     })
   }

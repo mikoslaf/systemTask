@@ -1,27 +1,13 @@
-<!-- Modal -->
-<!-- <div class="modal fade" id="removeModal" tabindex="-1" aria-labelledby="removeModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="removeModalLabel">Usuwanie danych</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Czy jesteś pewien, że chcesz usunąć? <br/><br/> {{getinfo()}}
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
-        <button type="button" class="btn btn-danger" (click)="remove()" data-bs-dismiss="modal" >Usuń</button>
-      </div>
-    </div>
-  </div>
-</div> -->
-
 <div class="card mt-3">
   <div class="card-body">
     <div class="row">
-      <div class="col-8">
+      <div class="col-7">
         <h4>{{ dane.name }}</h4>  
+      </div>
+      <div class="col-1">
+        <div class="text-wrap text-bg-info badge">
+          {{ getCategoryName(dane.category) }}
+        </div>
       </div>
       <div class="col-1">
         <div class="text-wrap text-bg-primary badge">
